@@ -1,6 +1,5 @@
 * {
     color: blueviolet;
-
 }
 
 body {
@@ -58,9 +57,7 @@ button[disabled] {
 
 .queue-container {
     max-width: 325px;
-
 }
-
 
 li {
     max-width: 275px;

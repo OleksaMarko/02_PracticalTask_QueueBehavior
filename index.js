@@ -1,85 +1,86 @@
 "use strict";
 
-const myAge = 32;
+(function () {
+  const MAX_ITEMS = 32;
 
-const storage = localStorage.getItem("queue");
+  const storage = localStorage.getItem("queue");
+  const inputForm = document.getElementById("form");
+  const submitButton = document.getElementById("submit");
+  const inputValue = document.getElementById("input");
+  const deleteButton = document.getElementById("deleteButton");
+  const queueList = document.getElementById("queue-list");
 
-let queue = [];
+  let queueData = [];
 
-let queueList = document.getElementById("queue-list");
+  submitButton.disabled = true;
 
-if (JSON.parse(storage).length !== 0) {
-  queue = JSON.parse(storage);
-  renderQueue(queue);
-}
-
-function renderQueue(list) {
-  queueList.innerHTML = "";
-
-  for (let i = 0; i < list.length; i++) {
-    let newListItem = document.createElement("li");
-    newListItem.innerHTML = list[i];
-    queueList.appendChild(newListItem);
+  if (JSON.parse(storage).length !== 0) {
+    queueData = JSON.parse(storage);
+    renderQueue(queueData);
   }
-}
 
-function addQueueItem(item, arr) {
-  if (arr.length > myAge - 1) {
-    return alert("Your queue is too loong");
-  } else {
-    return queue.push(item);
+  if (queueData.length < 1) {
+    queueList.innerHTML = "Your  queue list is empty";
   }
-}
 
-function addToLocalStorage(arr) {
-  localStorage.clear();
-  localStorage.setItem("queue", JSON.stringify(arr));
-}
+  function renderQueue(list) {
+    queueList.innerHTML = "";
 
-function deleteQueueItem(arr) {
-  if (queue.length === 0) {
-    alert("There are nothing left in your queue");
+    for (let i = 0; i < list.length; i++) {
+      let newListItem = document.createElement("li");
+      newListItem.innerHTML = list[i];
+      queueList.appendChild(newListItem);
+    }
   }
-  return arr.shift();
-}
 
-function deleteFromLocalStorage(arr) {
-  localStorage.clear();
-  localStorage.setItem("queue", JSON.stringify(arr));
-}
+  function addQueueItem(item, arr) {
+    if (arr.length > MAX_ITEMS - 1) {
+      return alert("Your queue is too loong");
+    } else {
+      return queueData.push(item);
+    }
+  }
 
-if (queue.length < 1) {
-  queueList.innerHTML = "Your  queue list is empty";
-}
+  function addToLocalStorage(arr) {
+    localStorage.clear();
+    localStorage.setItem("queue", JSON.stringify(arr));
+  }
 
-let inputForm = document.getElementById("form");
-let submitButton = document.getElementById("submit");
-let inputValue = document.getElementById("input");
+  function deleteQueueItem(arr) {
+    if (queueData.length === 0) {
+      alert("There are nothing left in your queue");
+    }
+    return arr.shift();
+  }
 
-submitButton.disabled = true;
-inputValue.addEventListener("input", (e) => {
-  submitButton.disabled = !e.target.value;
-});
-inputForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+  function deleteFromLocalStorage(arr) {
+    localStorage.clear();
+    localStorage.setItem("queue", JSON.stringify(arr));
+  }
 
-  if (inputValue.value == "") {
-    alert("Ensure your input is correct");
-  } else {
-    console.log(`This form has a input - ${inputValue.value}`);
-    addQueueItem(inputValue.value, queue);
-    renderQueue(queue);
-    addToLocalStorage(queue);
-    submitButton.disabled = true;
+  inputValue.addEventListener("input", (e) => {
+    submitButton.disabled = !e.target.value;
+  });
+
+  inputForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    if (inputValue.value == "") {
+      alert("Ensure your input is correct");
+    } else {
+      console.log(`This form has a input - ${inputValue.value}`);
+      addQueueItem(inputValue.value, queueData);
+      renderQueue(queueData);
+      addToLocalStorage(queueData);
+      submitButton.disabled = true;
+      inputValue.value = "";
+    }
+  });
+
+  deleteButton.addEventListener("click", (e) => {
+    deleteQueueItem(queueData);
+    renderQueue(queueData);
+    deleteFromLocalStorage(queueData);
     inputValue.value = "";
-  }
-});
-
-const deleteButton = document.getElementById("deleteButton");
-
-deleteButton.addEventListener("click", (e) => {
-  deleteQueueItem(queue);
-  renderQueue(queue);
-  deleteFromLocalStorage(queue);
-  inputValue.value = "";
-});
+  });
+})();
